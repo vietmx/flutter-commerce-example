@@ -1,0 +1,45 @@
+#TODO Add descriptions for scripts
+
+name: flutter_commerce
+
+packages:
+  - /**
+
+scripts:
+  analyze:
+    run: |
+      melos exec -c 1 --fail-fast -- "flutter analyze"
+  format:
+    run: |
+      melos exec flutter format lib
+  clean:
+    run: |
+      melos exec -c 1 --fail-fast -- flutter clean
+      melos exec -c 1 --fail-fast -- rm pubspec.lock
+      melos exec -c 1 --fail-fast -- rm -rf ./build ./android/.gradle ./ios/.symlinks ./ios/Pods ./android/.idea ./.idea ./.dart-tool/build
+  get:
+    run: |
+      melos bs
+  checkout:
+    run: |
+      melos clean
+      melos get
+  test:
+    run: |
+      melos exec --dir-exists="test" --fail-fast -- flutter test --no-pub --coverage
+  build:
+    run: |
+      cd mobile
+      flutter build apk
+      flutter build ios --release --no-codesign
+
+  generate:
+    run: |
+      melos exec -c 1 --fail-fast --  flutter packages pub run build_runner build --delete-conflicting-outputs
+
+  refactor:
+    run: |
+      melos analyze
+      melos checkout
+      melos format
+      melos generate
